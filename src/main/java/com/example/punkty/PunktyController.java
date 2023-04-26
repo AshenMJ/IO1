@@ -1,19 +1,27 @@
 package com.example.punkty;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @RestController
 @RequestMapping("/punkty")
 public class PunktyController {
-    String[] myArray = {"user1", "user2", "user3"};
-    @RequestMapping("/users")
+    CopyOnWriteArrayList<String> users = new CopyOnWriteArrayList<>();
+
+    @RequestMapping(value = "/users",method = RequestMethod.GET)
     public String getUsers()
     {
-        return Arrays.toString(this.myArray);
+        return users.toString();
+    }
+    @RequestMapping(value = "/users",method = RequestMethod.POST)
+    public int addUsers( @RequestBody String name)
+    {
+        this.users.add(name);
+        return this.users.size();
     }
 }
