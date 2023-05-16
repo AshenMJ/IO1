@@ -12,17 +12,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/punkty")
 public class PunktyController {
-    private StudentService service=new StudentService();
+    private final StudentService service;
 
-    @RequestMapping(value = "/students",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Student> getUsers()
+    public PunktyController(StudentService service)
     {
+        this.service = service;
+    }
+    @RequestMapping(value = "/students", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Student> getUsers() {
         return this.service.getStudents().asJava();
     }
-    @RequestMapping(value = "/students",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Student addUsers( @RequestBody  NewStudent student)
-    {
+
+    @RequestMapping(value = "/students", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Student addUser(@RequestBody NewStudent student) {
         return this.service.addStudent(student);
     }
 }

@@ -1,19 +1,39 @@
 package com.example.punkty;
+
+import com.example.punkty.db.IStudentRepository;
+import com.example.punkty.db.StudentRow;
 import io.vavr.collection.List;
+import org.springframework.stereotype.Service;
 
+import java.util.function.Function;
 
-
+@Service
 public class StudentService {
-    private int id=0;
-    public List<Student> students=List.empty();
-    public List<Student> getStudents()
-    {
-    return this.students;
+    private final IStudentRepository repository;
+
+    public StudentService(IStudentRepository repository) {
+        this.repository = repository;
     }
-    public Student addStudent(NewStudent student)
-    {   Student st1=new Student(id,student.name,student.number,student.grupa);
-        students=students.prepend(st1);
-        id++;
-        return st1;
+    List<Student> getStudents() {
+        return List.ofAll(this.repository.findAll())
+                .map(getStudentRowStudentFunction());
+    }
+
+    private static Function<StudentRow, Student> getStudentRowStudentFunction() {
+        return x -> new Student(
+                x.getId(),
+                x.getName(),
+                x.getNumber(),
+                x.getGroup()
+        );
+    }
+
+    Student addStudent(final NewStudent newStudent) {
+        StudentRow created = this.repository.save(new StudentRow(
+                newStudent.name,
+                newStudent.number,
+                newStudent.grupa
+        ));
+        return getStudentRowStudentFunction().apply(created);
     }
 }
